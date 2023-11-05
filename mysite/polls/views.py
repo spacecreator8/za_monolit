@@ -7,7 +7,8 @@ from django.views import generic
 
 
 def redirectView(request):
-    return redirect('/polls')
+    # return HttpResponse("Этo работает")
+    return redirect('polls/')
 
 
 class IndexView(generic.ListView):
