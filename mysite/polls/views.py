@@ -1,9 +1,11 @@
+from django.contrib.auth import login
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Question, Choice
 from django.template import loader
 from django.urls import reverse
 from django.views import generic
+from .forms import RegistrationForm
 
 
 def homeView(request):
@@ -11,19 +13,22 @@ def homeView(request):
 
 def regView(request):
     if request.method == 'POST':
-        form = RegistrationForm(reuquest.POST)
+        form = RegistrationForm(request.POST, request.FILES)
         if form.is_valid():
             if form.cleaned_data['password'] == form.cleaned_data['password2']:
                 new_user = form.save(commit=False)
                 new_user.set_password(form.cleaned_data['password'])
                 new_user.password2 = 'NULL'
                 new_user = form.save()
-                # login(request, new_user)
-                return redirect("loginView")
+                login(request, new_user)
+                # return render(request, 'polls/reg_success.html')
+                return redirect('polls:login')
+        else:
+            return render(request, 'polls/registration.html', {'form': form})
 
     else:
         form = RegistrationForm()
-        return render(request, 'polls.registration.html', {'form':form})
+        return render(request, 'polls/registration.html', {'form':form})
 
 def loginView(request):
     return HttpResponse("страница LOGIN работает")
