@@ -6,9 +6,30 @@ from django.urls import reverse
 from django.views import generic
 
 
-def redirectView(request):
-    # return HttpResponse("Этo работает")
-    return redirect('polls/')
+def homeView(request):
+    return render(request, 'home.html')
+
+def regView(request):
+    if request.method == 'POST':
+        form = RegistrationForm(reuquest.POST)
+        if form.is_valid():
+            if form.cleaned_data['password'] == form.cleaned_data['password2']:
+                new_user = form.save(commit=False)
+                new_user.set_password(form.cleaned_data['password'])
+                new_user.password2 = 'NULL'
+                new_user = form.save()
+                # login(request, new_user)
+                return redirect("loginView")
+
+    else:
+        form = RegistrationForm()
+        return render(request, 'polls.registration.html', {'form':form})
+
+def loginView(request):
+    return HttpResponse("страница LOGIN работает")
+
+# def redirectView(request):
+#     return redirect('polls/')
 
 
 class IndexView(generic.ListView):
