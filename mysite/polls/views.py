@@ -1,11 +1,13 @@
 from django.contrib.auth import login
+
+from django.contrib.auth.views import LoginView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Question, Choice
 from django.template import loader
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import generic
-from .forms import RegistrationForm
+from .forms import RegistrationForm, MyAuthenticationForm
 
 
 def homeView(request):
@@ -30,8 +32,13 @@ def regView(request):
         form = RegistrationForm()
         return render(request, 'polls/registration.html', {'form':form})
 
-def loginView(request):
-    return HttpResponse("страница LOGIN работает")
+class MyLoginView(LoginView):
+    template_name = 'polls/login.html'
+    form = MyAuthenticationForm
+    next_page = 'polls:index'
+
+    # def get_success_url(self):
+    #     return reverse_lazy('polls:index')
 
 # def redirectView(request):
 #     return redirect('polls/')
