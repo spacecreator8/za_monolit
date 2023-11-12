@@ -3,11 +3,13 @@ from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Question, Choice
+from django.views.generic import TemplateView, UpdateView
+
+from .models import Question, Choice, User
 from django.template import loader
 from django.urls import reverse, reverse_lazy
 from django.views import generic
-from .forms import RegistrationForm, MyAuthenticationForm
+from .forms import RegistrationForm, MyAuthenticationForm, ProfileForm
 
 
 def homeView(request):
@@ -40,8 +42,18 @@ class MyLoginView(LoginView):
     # def get_success_url(self):
     #     return reverse_lazy('polls:index')
 
-# def redirectView(request):
-#     return redirect('polls/')
+
+
+
+
+class Profile(UpdateView):
+    model = User
+    fields = '__all__'
+    success_url = reverse_lazy('polls:index')
+    template_name = 'polls/accounts/profile.html'
+
+
+
 
 
 class IndexView(generic.ListView):

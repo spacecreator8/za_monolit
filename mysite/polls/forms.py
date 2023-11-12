@@ -24,3 +24,9 @@ class MyAuthenticationForm(forms.ModelForm):
         widgets = {
             'password':forms.PasswordInput(attrs={}),
         }
+
+class ProfileForm(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = ['name', 'surname', 'mail', 'password', 'avatar']
