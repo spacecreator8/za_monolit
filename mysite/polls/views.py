@@ -48,7 +48,7 @@ class MyLoginView(LoginView):
 
 class Profile(UpdateView):
     model = User
-    fields = '__all__'
+    fields = ['name', 'surname', 'mail', 'avatar']
     success_url = reverse_lazy('polls:index')
     template_name = 'polls/accounts/profile.html'
 
