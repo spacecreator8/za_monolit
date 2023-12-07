@@ -1,4 +1,7 @@
-<h3>Привет  {{ user.username }}</h3>
+{% if user.avatar %}
+    <img src="{{ user.avatar.url }}" alt="avatarka" style="width: 50px;"><h3>{{ user.username }} </h3>
+{% endif %}
+
 {% if latest_question_list %}
 <ul>
     {% for question in latest_question_list %}

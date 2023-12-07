@@ -1,7 +1,8 @@
 from django.urls import path
+from django.conf.urls.static import static
 
+from mysite import settings
 from . import views
-
 
 app_name = 'polls'
 urlpatterns = [
@@ -14,4 +15,6 @@ urlpatterns = [
     path('registration/', views.regView, name='reg'),
     path('registration/login', views.MyLoginView.as_view(), name='login'),
     path('accounts/<int:pk>', views.Profile.as_view(), name='profile'),
+    path('delete_profile/<int:pk>', views.delete_profile, name='del_prof'),
 ]
+

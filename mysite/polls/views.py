@@ -3,7 +3,7 @@ from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
-from django.views.generic import TemplateView, UpdateView
+from django.views.generic import TemplateView, UpdateView, DeleteView
 
 from .models import Question, Choice, User
 from django.template import loader
@@ -51,6 +51,11 @@ class Profile(UpdateView):
     fields = ['name', 'surname', 'mail', 'avatar']
     success_url = reverse_lazy('polls:index')
     template_name = 'polls/accounts/profile.html'
+
+def delete_profile(request, pk):
+    obj = User.objects.get(pk=pk)
+    obj.delete()
+    return render(request, 'polls/delete_success.html')
 
 
 
