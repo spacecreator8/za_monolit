@@ -1,6 +1,7 @@
 from django.contrib.auth import login
 
 from django.contrib.auth.views import LoginView
+from django.db.models import Sum, F
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import TemplateView, UpdateView, DeleteView, RedirectView
@@ -91,6 +92,13 @@ class DetailView(generic.DetailView):
 class ResultsView(generic.DetailView):
     model = Question
     template_name = 'polls/results.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        all_votes = Choice.objects.aggregate(all_votes=Sum('votes'))['all_votes']
+        # choices_with_percents = Choice.objects.annotate(percents=F('votes') * 100 / all_votes)
+        context['all_votes']= all_votes
+        return context
 
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
