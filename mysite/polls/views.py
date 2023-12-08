@@ -77,7 +77,7 @@ class DetailView(generic.DetailView):
         question = get_object_or_404(Question, pk=kwargs['pk'])
         if VotedUsers.objects.filter(user=request.user, question=question.pk).exists():
             var=int(kwargs['pk'])
-           # return RedirectView.as_view(url='polls:results')(request, *args, **kwargs)
+           # return RedirectView.as_view(url='polls:results')(request, *args, **kwargs) 3
             return redirect(reverse('polls:results', args= (var,)))
 
         stub = Question.objects.get(pk=kwargs['pk'])
