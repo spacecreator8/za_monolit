@@ -1,3 +1,4 @@
+from django.contrib.auth.views import LogoutView
 from django.urls import path
 from django.conf.urls.static import static
 
@@ -16,5 +17,6 @@ urlpatterns = [
     path('registration/login', views.MyLoginView.as_view(), name='login'),
     path('accounts/<int:pk>', views.Profile.as_view(), name='profile'),
     path('delete_profile/<int:pk>', views.delete_profile, name='del_prof'),
+    path('logout/', LogoutView.as_view(), name='logout'),
 ]
 

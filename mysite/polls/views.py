@@ -3,9 +3,9 @@ from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
-from django.views.generic import TemplateView, UpdateView, DeleteView
+from django.views.generic import TemplateView, UpdateView, DeleteView, RedirectView
 
-from .models import Question, Choice, User
+from .models import Question, Choice, User, VotedUsers
 from django.template import loader
 from django.urls import reverse, reverse_lazy
 from django.views import generic
@@ -73,10 +73,27 @@ class DetailView(generic.DetailView):
     model = Question
     template_name = 'polls/detail.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        question = get_object_or_404(Question, pk=kwargs['pk'])
+        if VotedUsers.objects.filter(user=request.user, question=question.pk).exists():
+            var=int(kwargs['pk'])
+           # return RedirectView.as_view(url='polls:results')(request, *args, **kwargs)
+            return redirect(reverse('polls:results', args= (var,)))
+
+        stub = Question.objects.get(pk=kwargs['pk'])
+        if stub.was_published_recently():
+            return super().dispatch(request, *args, **kwargs)
+        else:
+            return redirect(reverse('polls:results', kwargs['pk']))
+
+
 
 class ResultsView(generic.DetailView):
     model = Question
     template_name = 'polls/results.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
 
 def vote(request, question_id):
@@ -89,6 +106,10 @@ def vote(request, question_id):
             'error_message': 'вы не сделали выбор'
         })
     else:
-        selected_choice.votes += 1
-        selected_choice.save()
-        return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+        if VotedUsers.objects.filter(user=request.user, question=question.pk).exists():
+            return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+        else:
+            VotedUsers.objects.create(user=request.user, question= question)
+            selected_choice.votes += 1
+            selected_choice.save()
+            return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))

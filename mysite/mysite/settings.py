@@ -25,8 +25,8 @@ SECRET_KEY = 'django-insecure-46$j3892j559n&y@#vm03v4rpp5vwlu@un^(3gz=o()x*km&)d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['127.0.0.1']
+SECURE_REDIRECT_EXEMPT = ['^']
 
 # Application definition
 
@@ -131,3 +131,5 @@ AUTH_USER_MODEL = 'polls.User'
 
 MEDIA_ROOT = BASE_DIR/'media'
 MEDIA_URL = '/media/'
+
+LOGOUT_REDIRECT_URL = 'home'

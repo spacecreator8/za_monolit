@@ -4,4 +4,5 @@
     <li>{{ choice.choice_text }} -- {{ choice.votes }} vote{{choice.votes|pluralize}}</li>
     {% endfor %}
 </ul>
-<a href="{% url 'polls:detail'  question.id %}">выбрать еще раз? </a>
+<a href="{% url 'polls:detail'  question.id %}">Выбрать еще раз? </a><br>
+<a href="{% url 'polls:index' %}">Вернуться</a>
