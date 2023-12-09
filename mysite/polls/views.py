@@ -1,7 +1,8 @@
 from django.contrib.auth import login
 
 from django.contrib.auth.views import LoginView
-from django.db.models import Sum, F
+from django.db.models import Sum, F, FloatField
+from django.db.models.functions import Cast
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import TemplateView, UpdateView, DeleteView, RedirectView
@@ -101,8 +102,12 @@ class ResultsView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         q = Question.objects.get(pk=self.kwargs['pk'])
-        q.choice_set.annotate(percent=F('votes') / Sum('votes') * 100)
+        #total_votes = q.choice_set.aggregate(total_votes=Sum('votes'))['total_votes']
+        total_votes = q.choice_set.aggregate(total_votes=Sum(Cast('votes', FloatField())))['total_votes']
+        choices_with_percent = q.choice_set.annotate(percent=(F('votes') / total_votes) * 100).values('choice_text', 'percent')
         context['question'] = q
+        context['total_votes'] = total_votes
+        context['choices_with_percents'] = choices_with_percent
         return context
 
 
