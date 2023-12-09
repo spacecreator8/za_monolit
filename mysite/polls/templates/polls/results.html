@@ -1,8 +1,15 @@
+{% load custom_filter %}
 <h1>{{ question.question_text }}</h1>
 <ul>
     {% for choice in question.choice_set.all %}
-    <li>{{ choice.choice_text }} -- {{ choice.votes|div:all_votes|mul:100 }} vote{{choice.votes|pluralize}}</li>
+    <li>{{ choice.choice_text }} -- {{ choice.percent }}% vote{{choice.votes|pluralize}}</li>
     {% endfor %}
 </ul>
-<a href="{% url 'polls:detail'  question.id %}">Выбрать еще раз? </a><br>
-<a href="{% url 'polls:index' %}">Вернуться</a>
+
+{% if user.is_superuser %}
+    <a href="{% url 'polls:history' %}">Вернуться</a>
+{% else %}
+    <a href="{% url 'polls:detail'  question.id %}">Выбрать еще раз? </a><br>
+    <a href="{% url 'polls:index' %}">Вернуться</a>
+{% endif %}
+<br>

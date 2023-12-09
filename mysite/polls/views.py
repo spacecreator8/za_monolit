@@ -88,6 +88,11 @@ class DetailView(generic.DetailView):
             return redirect(reverse('polls:results', kwargs['pk']))
 
 
+#def result_view(request, *args):
+#    key = args[0]
+#    question = Question.objects.get(pk=key)
+#    return render(request, 'polls/results.html', context={'question': question })
+
 
 class ResultsView(generic.DetailView):
     model = Question
@@ -95,13 +100,13 @@ class ResultsView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        all_votes = Choice.objects.aggregate(all_votes=Sum('votes'))['all_votes']
-        # choices_with_percents = Choice.objects.annotate(percents=F('votes') * 100 / all_votes)
-        context['all_votes']= all_votes
+        q = Question.objects.get(pk=self.kwargs['pk'])
+        q.choice_set.annotate(percent=F('votes') / Sum('votes') * 100)
+        context['question'] = q
         return context
 
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
+
+
 
 
 def vote(request, question_id):
@@ -121,3 +126,10 @@ def vote(request, question_id):
             selected_choice.votes += 1
             selected_choice.save()
             return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+
+class HistoryList(generic.ListView):
+    model= Question
+    template_name = 'polls/historylist.html'
+    context_object_name = 'lst'
+
+

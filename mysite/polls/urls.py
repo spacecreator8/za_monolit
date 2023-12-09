@@ -18,5 +18,6 @@ urlpatterns = [
     path('accounts/<int:pk>', views.Profile.as_view(), name='profile'),
     path('delete_profile/<int:pk>', views.delete_profile, name='del_prof'),
     path('logout/', LogoutView.as_view(), name='logout'),
+    path('historylist/', views.HistoryList.as_view(), name='history'),
 ]
 
