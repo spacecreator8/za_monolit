@@ -17,6 +17,8 @@ class User(AbstractUser):
 
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
+    main_text = models.TextField(blank=True, default=" ", null=True)
+    img = models.ImageField(upload_to='img_for_questions', null=True, blank=True, default=None)
     pub_date = models.DateTimeField('date published')
 
     def was_published_recently(self):

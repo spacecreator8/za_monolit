@@ -86,7 +86,7 @@ class DetailView(generic.DetailView):
         if stub.was_published_recently():
             return super().dispatch(request, *args, **kwargs)
         else:
-            return redirect(reverse('polls:results', kwargs['pk']))
+            return redirect(reverse_lazy('polls:index'))
 
 
 #def result_view(request, *args):
@@ -104,7 +104,8 @@ class ResultsView(generic.DetailView):
         q = Question.objects.get(pk=self.kwargs['pk'])
         #total_votes = q.choice_set.aggregate(total_votes=Sum('votes'))['total_votes']
         total_votes = q.choice_set.aggregate(total_votes=Sum(Cast('votes', FloatField())))['total_votes']
-        choices_with_percent = q.choice_set.annotate(percent=(F('votes') / total_votes) * 100).values('choice_text', 'percent')
+        choices_with_percent = (q.choice_set.annotate(percent=(F('votes') / total_votes) * 100)
+                                .values('choice_text', 'percent'))
         context['question'] = q
         context['total_votes'] = total_votes
         context['choices_with_percents'] = choices_with_percent
